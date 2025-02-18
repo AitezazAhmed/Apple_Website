@@ -49,7 +49,7 @@ const navData = {
   
 const Nav = () => {
   return (
-    <nav  style={{ backgroundColor: 'rgba(29, 29, 31, 0.8)' }} className='flex justify-center gap-9 h-11 items-center'>
+    <nav  className='flex justify-center gap-9 h-11 items-center'>
      <div ><img src="/Apple.svg" alt="Apple Logo" width={17} /></div>
         <ul className='flex gap-9'>
             {navData.navItems.map((item,idx)=>{
