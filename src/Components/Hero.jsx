@@ -19,24 +19,24 @@ const Hero = () => {
   useGSAP(() => {
     gsap.to("#herotext", {
       opacity: 1,
-      delay: 1,
+      delay: 0.5,
     });
   }, []);
   useGSAP(() => {
     gsap.to("#buy", {
       opacity: 1,
-      delay: 2,
-      y:-20
+      delay: 1.5,
+      y:-30
     });
   }, []);
   useGSAP(() => {
     gsap.to("#herovideo", {
       opacity: 1,
-      delay: 1.5,
+      delay: 1,
     });
   }, []);
   return (
-    <div className=" w-full flex h-150 flex-col justify-center max-sm:h-200 max-md:h-300">
+    <div className=" w-full flex h-150 flex-col justify-center max-sm:h-230 max-md:h-300 ">
       <p id="herotext" className="text-white text-center font-semibold text-3xl opacity-0 max-md:mb-10">
         iPhone 15 Pro
       </p>
