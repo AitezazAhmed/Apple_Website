@@ -3,13 +3,13 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 const Hero = () => {
-  const [videoSrc, setVideoSrc] = useState(window.innerWidth < 760 ? "/smallHero.mp4" : "/hero.mp4");
+  const [videoSrc, setVideoSrc] = useState(window.innerWidth < 760 ? "/assets/videos/smallHero.mp4" : "/assets/videos/hero.mp4");
   const handleResize = () => {
     if(window.innerWidth<760){
-      setVideoSrc="/smallHero.mp4"
+      setVideoSrc="/assets/videos/smallHero.mp4"
     }
     else{
-      setVideoSrc="/hero.mp4"
+      setVideoSrc="/assets/videos/hero.mp4"
     }
   };
   useEffect(() => {
@@ -19,18 +19,34 @@ const Hero = () => {
   useGSAP(() => {
     gsap.to("#herotext", {
       opacity: 1,
+      delay: 1,
+    });
+  }, []);
+  useGSAP(() => {
+    gsap.to("#buy", {
+      opacity: 1,
+      delay: 2,
+      y:-20
+    });
+  }, []);
+  useGSAP(() => {
+    gsap.to("#herovideo", {
+      opacity: 1,
       delay: 1.5,
     });
   }, []);
-
   return (
-    <div className="h-150 w-full flex flex-col justify-center">
+    <div className=" w-full flex h-150 flex-col justify-center max-sm:h-200 max-md:h-300">
       <p id="herotext" className="text-white text-center font-semibold text-3xl opacity-0 max-md:mb-10">
         iPhone 15 Pro
       </p>
-      <video className="pointer-events-none" muted autoPlay playsInline>
+      <video id="herovideo" className=" opacity-0 pointer-events-none" muted autoPlay playsInline>
         <source src={videoSrc} type="video/mp4" />
       </video>
+      <div id="buy" className="opacity-0 justify-items-center translate-y-20 ">
+        <a  href="#highlights" className="  text-white px-5 py-2 rounded-3xl bg-blue-700 my-5 border border-transparent hover:border hover:text-white hover:border-blue hover:bg-blue-500">Buy</a>
+<p className="font-normal text-white mt-2 ">From $199/month or $999</p>
+      </div>
     </div>
   );
 };
