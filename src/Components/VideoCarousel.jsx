@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from "react";
-// import { useState } from "react";
-// import { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+gsap.registerPlugin(ScrollTrigger);
 
-// Define video paths (Replace with actual paths)
 const highlightFirstVideo = "/assets/videos/highlight-first.mp4";
 const highlightSecondVideo = "/assets/videos/hightlight-third.mp4";
 const highlightThirdVideo = "/assets/videos/hightlight-sec.mp4";
@@ -42,41 +42,96 @@ const highlightsSlides = [
         videoDuration: 3.63,
     },
 ];
-// const videoRef= useRef([])
-// const videoSpanRef= useRef([])
-// const videoDevRef= useRef([])
-// const [video, setVideo]=({
-//     isEnd:false,
-//     startPlay:false,
-//     videoId:0,
-//     isLastvideo:false,
-//     isPlaying:false
-// }
-// )
-// const {isEnd,isLastvideo,isPlaying,videoId,startPlay}=video
-// useEffect(()=>{
 
-// },[videoId,startPlay])
 const VideoCarousel = () => {
+    const videoRefs = useRef([]);
+    const containerRef = useRef(null);
+    const [currentVideo, setCurrentVideo] = useState(0);
+
+    useEffect(() => {
+        videoRefs.current.forEach((video, index) => {
+            ScrollTrigger.create({
+                trigger: video,
+                start: "top 80%",
+                onEnter: () => {
+                    if (index === 0) {
+                        video.play();
+                    }
+                },
+            });
+        });
+    }, []);
+
+    useEffect(() => {
+        const playNextVideo = (index) => {
+            let nextIndex = index + 1;
+            if (nextIndex >= highlightsSlides.length) {
+                nextIndex = 0; // Loop back to the first video
+            }
+
+            gsap.to(containerRef.current, {
+                x: `-${nextIndex * 100}%`,
+                duration: 1.5,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    setCurrentVideo(nextIndex);
+                    videoRefs.current[nextIndex].play();
+                },
+            });
+        };
+
+        if (videoRefs.current[currentVideo]) {
+            videoRefs.current[currentVideo].onended = () => playNextVideo(currentVideo);
+        }
+    }, [currentVideo]);
+
     return (
-        <div className="flex items-center">
-            {highlightsSlides.map((list, i) => (
-                <div key={list.id} id="slider" className="sm:pr-20 pr-10">
-                    <div className="relative sm:w-[70vw] w-[88vw] md:h-[70vh] sm:h-[50vh] h-[35vh]">
-                    <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
-                        <video  muted preload="auto"  ><source src={list.video} /></video></div>
-                         <div className="absolute top-12 left-5 text-white z-10 max-sm:left-0">
-                           <p className="text-xl font-medium md:text-2xl">{list.textLists}</p>
-                         </div>
-                     </div>
-                  
-                </div>
-            ))}
+        <div className="overflow-hidden relative w-full">
+            <div ref={containerRef} className="flex transition-transform duration-700 w-full">
+                {highlightsSlides.map((list, i) => (
+                    <div key={list.id} className="w-full flex-shrink-0 p-5">
+                        <div className="relative w-full max-w-4xl mx-auto h-[50vh] sm:h-[60vh] md:h-[70vh]">
+                            <div className="w-full h-full flex items-center justify-center rounded-3xl overflow-hidden bg-black">
+                                <video
+                                    ref={(el) => (videoRefs.current[i] = el)}
+                                    muted
+                                    playsInline
+                                    preload="metadata"
+                                    className="w-full h-full object-cover"
+                                >
+                                    <source src={list.video} type="video/mp4" />
+                                </video>
+                            </div>
+                            <div className="absolute top-12 left-5 text-white z-10">
+                                {list.textLists.map((text, index) => (
+                                    <p key={index} className="text-lg md:text-2xl font-medium">{text}</p>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {highlightsSlides.map((_, index) => (
+              <span
+                  key={index}
+                  className={`w-3 h-3 rounded-full ${currentVideo === index ? "bg-white" : "bg-gray-500"}`}
+              />
+          ))}
+      </div>
+          
         </div>
+    
     );
 };
 
 export default VideoCarousel;
+
+
+
+
+
+
 
 
 
